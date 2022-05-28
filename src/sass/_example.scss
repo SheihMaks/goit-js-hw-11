@@ -25,3 +25,15 @@
   background-size: cover;
   background-position: center;
 }
+
+.gallery{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+ 
+}
+// .photo-card{
+//   width: auto;
+//     height: auto;
+// }
