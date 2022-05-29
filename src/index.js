@@ -7,6 +7,7 @@ const galleryRef = document.querySelector('.gallery');
 const loadButtonRef = document.querySelector('.load-more');
 const searchPictures = new SearchPictures();
 loadButtonRef.classList.add('hiden');
+
 function onSubmitSearch(ev) {
   ev.preventDefault();
   galleryRef.innerHTML = '';
@@ -18,10 +19,14 @@ function onSubmitSearch(ev) {
   }
   searchPictures
     .onSearchPictures()
-    .then(
-      pictures => galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
-      loadButtonRef.classList.remove('hiden'),
+    .then(pictures => {
+      searchPictures.totalhits(pictures);
+      return pictures;
+    })
+    .then(pictures =>
+      galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
     );
+  loadButtonRef.classList.remove('hiden');
 }
 
 function onLoadBtnClick(ev) {
