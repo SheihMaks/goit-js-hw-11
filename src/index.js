@@ -14,19 +14,15 @@ function onSubmitSearch(ev) {
   searchPictures.resetPage();
   searchPictures.searched = ev.target.elements.searchQuery.value.trim();
   if (!searchPictures.searched) {
-    Notiflix.Notify.failure('Qui timide rogat docet negare');
+    Notiflix.Notify.failure('Enter something for search!');
     return;
   }
-  searchPictures
-    .onSearchPictures()
-    .then(pictures => {
-      searchPictures.totalhits(pictures);
-      return pictures;
-    })
-    .then(pictures =>
-      galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
-    );
-  loadButtonRef.classList.remove('hiden');
+
+  searchPictures.onSearchPictures().then(pictures => {
+    galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+    searchPictures.totalhits(pictures);
+    loadButtonRef.classList.remove('hiden');
+  });
 }
 
 function onLoadBtnClick(ev) {

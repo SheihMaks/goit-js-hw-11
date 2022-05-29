@@ -18,15 +18,12 @@ export class SearchPictures {
     };
     try {
       const pictures = await axios.get(URL, { params });
-      console.log(pictures);
-
+      console.log(pictures.data.hits.length);
       if (pictures.data.hits.length === 0) {
         Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.',
         );
-        return;
       }
-
       this.incrementPage();
       return pictures;
     } catch (error) {
@@ -34,7 +31,10 @@ export class SearchPictures {
     }
   }
   totalhits(pictures) {
-    Notiflix.Notify.info(`Hooray! We found ${pictures.data.totalHits} images.`);
+    if (pictures.data.hits.length > 0) {
+      Notiflix.Notify.info(`Hooray! We found ${pictures.data.totalHits} images.`);
+    }
+    return;
   }
   incrementPage() {
     this.page += 1;
