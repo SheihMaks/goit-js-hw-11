@@ -1,12 +1,15 @@
 import './sass/main.scss';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { SearchPictures } from './onSearchPictures';
 import markupPictureCard from './templates/markupPictureCard';
 const formRef = document.querySelector('#search-form');
 const galleryRef = document.querySelector('.gallery');
 const loadButtonRef = document.querySelector('.load-more');
 const searchPictures = new SearchPictures();
+let lightbox = new SimpleLightbox('.gallery a');
+
 loadButtonRef.classList.add('hiden');
 
 function onSubmitSearch(ev) {
@@ -20,6 +23,7 @@ function onSubmitSearch(ev) {
   searchPictures.resetPage();
   searchPictures.onSearchPictures().then(pictures => {
     galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+    lightbox.refresh();
     totalhits(pictures);
     loadButtonRef.classList.remove('hiden');
   });
@@ -29,7 +33,8 @@ function onLoadBtnClick(ev) {
   ev.preventDefault();
   searchPictures.onSearchPictures().then(pictures => {
     galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
-      inTheEndOfGallery(pictures);
+      lightbox.refresh();
+    inTheEndOfGallery(pictures);
   });
 }
 
