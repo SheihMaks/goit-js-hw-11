@@ -6,6 +6,7 @@ export class SearchPictures {
   constructor() {
     this.userSearch = '';
     this.page = 0;
+    this.per_page = 40;
   }
   async onSearchPictures() {
     this.incrementPage();
@@ -14,7 +15,7 @@ export class SearchPictures {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 200,
+      per_page: `${this.per_page}`,
       page: `${this.page}`,
     };
     try {

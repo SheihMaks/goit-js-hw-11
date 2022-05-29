@@ -40,7 +40,7 @@ function totalhits(pictures) {
 }
 
 function inTheEndOfGallery(pictures) {
-  if (searchPictures.page > pictures.data.totalHits / 200) {
+  if (searchPictures.page > pictures.data.totalHits / searchPictures.per_page) {
     Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
     loadButtonRef.classList.add('hiden');
   }
