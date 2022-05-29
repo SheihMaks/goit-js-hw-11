@@ -20,17 +20,17 @@ export class SearchPictures {
     };
     try {
       const pictures = await axios.get(URL, { params });
-      console.log(pictures.data.hits.length);
-      if (pictures.data.hits.length === 0) {
-        Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-        );
-      }
-
-      console.log(this.page);
+      this.validationOfArray(pictures);
       return pictures;
     } catch (error) {
       Notiflix.Notify.failure('Sorry, error!!!');
+    }
+  }
+  validationOfArray(pictures) {
+    if (pictures.data.hits.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.',
+      );
     }
   }
   incrementPage() {

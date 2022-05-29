@@ -1,5 +1,6 @@
 import './sass/main.scss';
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
 import { SearchPictures } from './onSearchPictures';
 import markupPictureCard from './templates/markupPictureCard';
 const formRef = document.querySelector('#search-form');
