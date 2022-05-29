@@ -1,31 +1,36 @@
 import './sass/main.scss';
 import Notiflix from 'notiflix';
-import { onSearchPictures } from './onSearchPictures';
+import { SearchPictures } from './onSearchPictures';
 import markupPictureCard from './templates/markupPictureCard';
 const formRef = document.querySelector('#search-form');
-const galleryContainer = document.querySelector('.gallery');
-formRef.addEventListener('submit', onSubmitSearch);
-
+const galleryRef = document.querySelector('.gallery');
+const loadButtonRef = document.querySelector('.load-more');
+const searchPictures = new SearchPictures();
+loadButtonRef.classList.add('hiden');
 function onSubmitSearch(ev) {
   ev.preventDefault();
-  galleryContainer.innerHTML = '';
-  const userSearch = ev.target.elements.searchQuery.value.trim();
-  if (!userSearch) {
+  galleryRef.innerHTML = '';
+  searchPictures.resetPage();
+  searchPictures.searched = ev.target.elements.searchQuery.value.trim();
+  if (!searchPictures.searched) {
     Notiflix.Notify.failure('Qui timide rogat docet negare');
     return;
   }
-  onSearchPictures(userSearch)
-    .then(searched => {
-      if (searched.data.hits.length === 0) {
-        Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-        );
-        return;
-      }
-      const data = searched.data.hits;
-      galleryContainer.insertAdjacentHTML('beforeend', markupPictureCard(data));
-    })
-    .catch(error => Notiflix.Notify.failure('Sorry, error!'));
-
-  //   console.log(search);
+  searchPictures
+    .onSearchPictures()
+    .then(
+      pictures => galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
+      loadButtonRef.classList.remove('hiden'),
+    );
 }
+
+function onLoadBtnClick(ev) {
+  ev.preventDefault();
+  searchPictures
+    .onSearchPictures()
+    .then(pictures =>
+      galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
+    );
+}
+formRef.addEventListener('submit', onSubmitSearch);
+loadButtonRef.addEventListener('click', onLoadBtnClick);
