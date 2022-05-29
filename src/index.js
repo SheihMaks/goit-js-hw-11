@@ -9,7 +9,6 @@ const galleryRef = document.querySelector('.gallery');
 const loadButtonRef = document.querySelector('.load-more');
 const searchPictures = new SearchPictures();
 let lightbox = new SimpleLightbox('.gallery a');
-
 loadButtonRef.classList.add('hiden');
 
 function onSubmitSearch(ev) {
