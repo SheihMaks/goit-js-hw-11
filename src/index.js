@@ -4,16 +4,18 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { SearchPictures } from './onSearchPictures';
 import markupPictureCard from './templates/markupPictureCard';
-const formRef = document.querySelector('#search-form');
-const galleryRef = document.querySelector('.gallery');
-const loadButtonRef = document.querySelector('.load-more');
+const refs = {
+  form: document.querySelector('#search-form'),
+  gallery: document.querySelector('.gallery'),
+  orientirBuoy: document.querySelector('.buoy'),
+};
+
 const searchPictures = new SearchPictures();
 let lightbox = new SimpleLightbox('.gallery a');
-loadButtonRef.classList.add('hiden');
 
 function onSubmitSearch(ev) {
   ev.preventDefault();
-  galleryRef.innerHTML = '';
+  refs.gallery.innerHTML = '';
   searchPictures.searched = ev.target.elements.searchQuery.value.trim();
   if (!searchPictures.searched) {
     Notiflix.Notify.failure('Enter something for search!');
@@ -21,21 +23,16 @@ function onSubmitSearch(ev) {
   }
   searchPictures.resetPage();
   searchPictures.onSearchPictures().then(pictures => {
-    galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+    refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
     lightbox.refresh();
     totalhits(pictures);
-    loadButtonRef.classList.remove('hiden');
   });
 }
 
-function onLoadBtnClick(ev) {
-  ev.preventDefault();
-  searchPictures.onSearchPictures().then(pictures => {
-    galleryRef.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits)),
-      lightbox.refresh();
-    inTheEndOfGallery(pictures);
-  });
-}
+// function onLoadBtnClick(ev) {
+//   ev.preventDefault();
+//
+// }
 
 function totalhits(pictures) {
   if (pictures.data.hits.length > 0) {
@@ -47,9 +44,28 @@ function totalhits(pictures) {
 function inTheEndOfGallery(pictures) {
   if (searchPictures.page > pictures.data.totalHits / searchPictures.per_page) {
     Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
-    loadButtonRef.classList.add('hiden');
   }
 }
 
-formRef.addEventListener('submit', onSubmitSearch);
-loadButtonRef.addEventListener('click', onLoadBtnClick);
+refs.form.addEventListener('submit', onSubmitSearch);
+
+const OnEntries = entries =>
+  entries.forEach(entry => {
+    console.log(entry.target);
+    console.log(searchPictures.searched);
+    if (entry.isIntersecting && searchPictures.searched !== '') {
+      searchPictures.onSearchPictures().then(pictures => {
+        console.log(pictures);
+        refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+        lightbox.refresh();
+        inTheEndOfGallery(pictures);
+      });
+    }
+  });
+
+const options = {
+  rootmargin: '150px',
+};
+const observer = new IntersectionObserver(OnEntries, options);
+observer.observe(refs.orientirBuoy);
+// loadButtonRef.addEventListener('click', populate);

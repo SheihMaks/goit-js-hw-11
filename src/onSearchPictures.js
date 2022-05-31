@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
-// import { render } from 'sass';
 const URL = `https://pixabay.com/api/?key=27705684-ea6ff4282bc06d8fe5ddb5326`;
 export class SearchPictures {
   constructor() {
