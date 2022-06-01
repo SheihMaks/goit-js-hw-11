@@ -2,12 +2,14 @@ import './sass/main.scss';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { SearchPictures } from './onSearchPictures';
+import { SearchPictures } from './js/onSearchPictures';
+import totalHits from './js/totalHits';
+// import { observer } from './js/observer';
 import markupPictureCard from './templates/markupPictureCard';
 const refs = {
   form: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
-  orientirBuoy: document.querySelector('.buoy'),
+  orientirBuoy: document.querySelector('.observer_buoy'),
 };
 
 const searchPictures = new SearchPictures();
@@ -23,22 +25,11 @@ function onSubmitSearch(ev) {
   }
   searchPictures.resetPage();
   searchPictures.onSearchPictures().then(pictures => {
+    searchPictures.validationOfArray(pictures);
     refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
     lightbox.refresh();
-    totalhits(pictures);
+    totalHits(pictures);
   });
-}
-
-// function onLoadBtnClick(ev) {
-//   ev.preventDefault();
-//
-// }
-
-function totalhits(pictures) {
-  if (pictures.data.hits.length > 0) {
-    Notiflix.Notify.info(`Hooray! We found ${pictures.data.totalHits} images.`);
-  }
-  return;
 }
 
 function inTheEndOfGallery(pictures) {
@@ -51,21 +42,16 @@ refs.form.addEventListener('submit', onSubmitSearch);
 
 const OnEntries = entries =>
   entries.forEach(entry => {
-    console.log(entry.target);
-    console.log(searchPictures.searched);
     if (entry.isIntersecting && searchPictures.searched !== '') {
       searchPictures.onSearchPictures().then(pictures => {
-        console.log(pictures);
         refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
         lightbox.refresh();
         inTheEndOfGallery(pictures);
       });
     }
   });
-
 const options = {
   rootmargin: '150px',
 };
 const observer = new IntersectionObserver(OnEntries, options);
 observer.observe(refs.orientirBuoy);
-// loadButtonRef.addEventListener('click', populate);
