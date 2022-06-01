@@ -4,8 +4,8 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { SearchPictures } from './js/onSearchPictures';
 import totalHits from './js/totalHits';
-// import { observer } from './js/observer';
 import markupPictureCard from './templates/markupPictureCard';
+
 const refs = {
   form: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
@@ -13,6 +13,7 @@ const refs = {
 };
 
 const searchPictures = new SearchPictures();
+
 let lightbox = new SimpleLightbox('.gallery a');
 
 function onSubmitSearch(ev) {
@@ -38,8 +39,6 @@ function inTheEndOfGallery(pictures) {
   }
 }
 
-refs.form.addEventListener('submit', onSubmitSearch);
-
 const OnEntries = entries =>
   entries.forEach(entry => {
     if (entry.isIntersecting && searchPictures.searched !== '') {
@@ -50,8 +49,13 @@ const OnEntries = entries =>
       });
     }
   });
+
 const options = {
   rootmargin: '150px',
 };
+
 const observer = new IntersectionObserver(OnEntries, options);
+
 observer.observe(refs.orientirBuoy);
+
+refs.form.addEventListener('submit', onSubmitSearch);
