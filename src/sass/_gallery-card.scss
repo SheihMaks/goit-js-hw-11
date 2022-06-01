@@ -1,17 +1,12 @@
-body{
-    max-width: 100%;
-}
-
-
 .card{
-        flex-basis: calc((100% - 75px)/4);
+        flex-basis: calc((100% - 40px)/3);
+        width: 20%;
         margin: 10px auto;
 }
 
 .photo-card {
     display: flex;
     flex-direction: column;
-    flex-basis: calc((100% - 60px)/4);
 }
 
 .photo-card img{
@@ -21,8 +16,9 @@ body{
 
 .info {
     display: flex;
+    flex-wrap: wrap;
     text-align: center;
-    justify-content: space-between;
+    justify-content: center;
     text-decoration: none;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -34,7 +30,8 @@ body{
 }
 
 .info-item {
+    flex-basis:calc((100%- 40px)/2) ;
     color: #ffff;
-    font-size: 16px;
+    font-size: 14px;
     margin: 16px;
 }
