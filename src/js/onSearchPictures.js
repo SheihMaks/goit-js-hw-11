@@ -19,7 +19,6 @@ export class SearchPictures {
     };
     try {
       const pictures = await axios.get(URL, { params });
-
       return pictures;
     } catch (error) {
       Notiflix.Notify.failure('Sorry, error!!!');

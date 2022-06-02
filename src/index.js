@@ -12,9 +12,9 @@ const refs = {
   orientirBuoy: document.querySelector('.observer_buoy'),
 };
 
-const searchPictures = new SearchPictures();
-
+let observer = null;
 let lightbox = new SimpleLightbox('.gallery a');
+const searchPictures = new SearchPictures();
 
 function onSubmitSearch(ev) {
   ev.preventDefault();
@@ -24,10 +24,14 @@ function onSubmitSearch(ev) {
     Notiflix.Notify.failure('Enter something for search!');
     return;
   }
+  if (observer) {
+    observer.unobserve(refs.orientirBuoy);
+  }
   searchPictures.resetPage();
   searchPictures.onSearchPictures().then(pictures => {
     searchPictures.validationOfArray(pictures);
     refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+    registrationObserver();
     lightbox.refresh();
     totalHits(pictures);
   });
@@ -39,23 +43,28 @@ function inTheEndOfGallery(pictures) {
   }
 }
 
-const OnEntries = entries =>
-  entries.forEach(entry => {
-    if (entry.isIntersecting && searchPictures.searched !== '') {
-      searchPictures.onSearchPictures().then(pictures => {
-        refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
-        lightbox.refresh();
-        inTheEndOfGallery(pictures);
-      });
-    }
-  });
+function registrationObserver() {
+  const OnEntries = entries =>
+    entries.forEach(entry => {
+      if (
+        entry.isIntersecting &&
+        searchPictures.searched !== '' &&
+        searchPictures.searched === searchPictures.userSearch
+      ) {
+        searchPictures.onSearchPictures().then(pictures => {
+          refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
+          lightbox.refresh();
+          inTheEndOfGallery(pictures);
+        });
+      }
+    });
 
-const options = {
-  rootmargin: '150px',
-};
+  const options = {
+    rootmargin: '150px',
+  };
 
-const observer = new IntersectionObserver(OnEntries, options);
-
-observer.observe(refs.orientirBuoy);
+  observer = new IntersectionObserver(OnEntries, options);
+  observer.observe(refs.orientirBuoy);
+}
 
 refs.form.addEventListener('submit', onSubmitSearch);
