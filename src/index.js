@@ -29,7 +29,7 @@ function onSubmitSearch(ev) {
   }
   searchPictures.resetPage();
   searchPictures.onSearchPictures().then(pictures => {
-    searchPictures.validationOfArray(pictures);
+    validationOfArray(pictures);
     refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
     registrationObserver();
     lightbox.refresh();
@@ -37,8 +37,20 @@ function onSubmitSearch(ev) {
   });
 }
 
+const validationOfArray = pictures => {
+  if (pictures.data.hits.length === 0) {
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.',
+    );
+    return;
+  }
+};
+
 function inTheEndOfGallery(pictures) {
-  if (searchPictures.page > pictures.data.totalHits / searchPictures.per_page) {
+  if (
+    searchPictures.page > pictures.data.totalHits / searchPictures.per_page &&
+    pictures.data.hits.length !== 0
+  ) {
     Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
   }
 }
@@ -46,11 +58,7 @@ function inTheEndOfGallery(pictures) {
 function registrationObserver() {
   const OnEntries = entries =>
     entries.forEach(entry => {
-      if (
-        entry.isIntersecting &&
-        searchPictures.searched !== '' &&
-        searchPictures.searched === searchPictures.userSearch
-      ) {
+      if (entry.isIntersecting && searchPictures.searched !== '') {
         searchPictures.onSearchPictures().then(pictures => {
           refs.gallery.insertAdjacentHTML('beforeend', markupPictureCard(pictures.data.hits));
           lightbox.refresh();

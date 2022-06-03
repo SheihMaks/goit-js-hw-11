@@ -24,13 +24,6 @@ export class SearchPictures {
       Notiflix.Notify.failure('Sorry, error!!!');
     }
   }
-  validationOfArray(pictures) {
-    if (pictures.data.hits.length === 0) {
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.',
-      );
-    }
-  }
   incrementPage() {
     this.page += 1;
   }
